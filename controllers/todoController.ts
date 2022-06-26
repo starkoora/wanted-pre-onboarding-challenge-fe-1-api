@@ -1,13 +1,14 @@
 import type { Request, Response } from "express";
 
-import { create, update } from "../utils/dbUtils";
+import { create, update } from "../models/db";
 import { getTodoByTodoId } from "../utils/relationUtils";
 import { StatusCodes } from "http-status-codes";
-import db, { Data } from "../models/db";
+import { db } from "../models/db";
 import { createError, createResponse } from "../utils/responseUtils";
 
-export const getTodos = (req: Request, res: Response) => {
+export const getTodos = async (req: Request, res: Response) => {
   const { countOnly } = req.query;
+
   const todos = db.data?.todos;
 
   if (todos) {
@@ -21,6 +22,7 @@ export const getTodos = (req: Request, res: Response) => {
       .send(createError("Unable to retrieve data from server"));
   }
 };
+
 export const createTodo = async (req: Request, res: Response) => {
   const { title, content } = req.body;
 
@@ -36,6 +38,7 @@ export const createTodo = async (req: Request, res: Response) => {
       .send(createError("must provide a valid title"));
   }
 };
+
 export const getTodo = (req: Request, res: Response) => {
   const todoId = req.params.id;
 
@@ -49,6 +52,7 @@ export const getTodo = (req: Request, res: Response) => {
       .send(createError("invalid todo id"));
   }
 };
+
 export const updateTodo = async (req: Request, res: Response) => {
   const todoId = req.params.id;
   const { title, content } = req.body;
@@ -67,6 +71,7 @@ export const updateTodo = async (req: Request, res: Response) => {
       .send(createError("unable to find designated memo"));
   }
 };
+
 export const deleteTodo = async (req: Request, res: Response) => {
   const todoId = req.params.id;
   const todo = getTodoByTodoId(todoId);

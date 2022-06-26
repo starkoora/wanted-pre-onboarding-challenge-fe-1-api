@@ -1,4 +1,4 @@
-import { createConnection } from "./utils/dbUtils";
+import { createConnection } from "./models/db";
 import app from "./app";
 
 createConnection();

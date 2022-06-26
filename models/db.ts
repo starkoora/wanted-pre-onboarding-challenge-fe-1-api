@@ -1,33 +1,48 @@
-import fs from "fs";
+import { Low, JSONFile } from "lowdb";
+import { join } from "path";
+import { nanoid } from "nanoid";
 import path from "path";
-import { JSONFile, Low } from "lowdb";
 
 const __dirname = path.resolve();
-
-const dbDirectory = path.join(__dirname, "../db");
 
 export interface Data {
   todos: any[];
 }
 
-/**
- * Creates Database directory if it doesn't exist.
- */
-if (!fs.existsSync(dbDirectory)) {
-  fs.mkdirSync(dbDirectory);
-}
+export let db: Low<Data>;
 
-const fileDirectory = path.join(__dirname, `../db/db.json`);
+console.log(">>>>>>>", __dirname);
 
-const adapter = new JSONFile<Data>(fileDirectory);
-const db = new Low(adapter);
+export const createConnection = async () => {
+  // Use JSON file for storage
+  const file = join(__dirname, "./db/db.json");
+  const adapter = new JSONFile<Data>(file);
+  db = new Low<Data>(adapter);
 
-(async () => {
+  // Read data from JSON file, this will set db.data content
   await db.read();
 
-  db.data?.todos.push([]);
-
+  db.data ||= { todos: [] };
+  // Write db.data content to db.json
   await db.write();
-})();
+};
 
-export default db;
+export const getConnection = () => db;
+
+export const create = (content: any) => {
+  const timestamp = new Date().toISOString();
+  return {
+    ...content,
+    id: nanoid(),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+};
+
+export const update = (content: any) => {
+  const timestamp = new Date().toISOString();
+  return {
+    ...content,
+    updatedAt: timestamp,
+  };
+};
