@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import { create, update } from "../models/db";
+import { create, Data, update } from "../models/db";
 import { getTodoByTodoId } from "../utils/relationUtils";
 import { StatusCodes } from "http-status-codes";
 import { db } from "../models/db";
@@ -74,6 +74,8 @@ export const updateTodo = async (req: Request, res: Response) => {
 
 export const deleteTodo = async (req: Request, res: Response) => {
   const todoId = req.params.id;
+
+  console.log(req.params);
   const todo = getTodoByTodoId(todoId);
 
   if (!todo) {
@@ -85,7 +87,9 @@ export const deleteTodo = async (req: Request, res: Response) => {
   /**
    * Remove Todo
    */
-  // db.data = db.data?.todos.filter((todo) => todo.id === todoId) ?? [];
+  const newTodos = db.data?.todos.filter((todo) => todo.id !== todoId)!;
+
+  (db.data as Data).todos = newTodos;
 
   await db.write();
 

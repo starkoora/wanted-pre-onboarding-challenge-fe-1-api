@@ -2,12 +2,15 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import createError from "http-errors";
+import bodyParser from "body-parser";
+
 import todos from "./routes/todos";
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(cors());
 

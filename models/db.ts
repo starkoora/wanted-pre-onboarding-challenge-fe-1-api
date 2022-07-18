@@ -11,8 +11,6 @@ export interface Data {
 
 export let db: Low<Data>;
 
-console.log(">>>>>>>", __dirname);
-
 export const createConnection = async () => {
   // Use JSON file for storage
   const file = join(__dirname, "./db/db.json");
