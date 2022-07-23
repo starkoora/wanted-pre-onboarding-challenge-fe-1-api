@@ -5,6 +5,25 @@ import { getTodoByTodoId } from "../utils/relationUtils";
 import { StatusCodes } from "http-status-codes";
 import { db } from "../models/db";
 import { createError, createResponse } from "../utils/responseUtils";
+import type { Todo } from "../types/todos";
+
+export const createTodo = async (req: Request, res: Response) => {
+  const { title, content }: { title: string; content: string } = req.body;
+
+  console.log(req.body);
+
+  if (title) {
+    const todo = create<Todo>({ title, content });
+    db.data?.todos.push(todo);
+    await db.write();
+
+    return res.status(StatusCodes.OK).send(createResponse(todo));
+  } else {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .send(createError("must provide a valid title"));
+  }
+};
 
 export const getTodos = async (req: Request, res: Response) => {
   const { countOnly } = req.query;
@@ -20,22 +39,6 @@ export const getTodos = async (req: Request, res: Response) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .send(createError("Unable to retrieve data from server"));
-  }
-};
-
-export const createTodo = async (req: Request, res: Response) => {
-  const { title, content } = req.body;
-
-  if (title) {
-    const todo = create({ title, content });
-    db.data?.todos.push(todo);
-    await db.write();
-
-    return res.status(StatusCodes.OK).send(createResponse(todo));
-  } else {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .send(createError("must provide a valid title"));
   }
 };
 
@@ -59,7 +62,7 @@ export const updateTodo = async (req: Request, res: Response) => {
 
   const todo = getTodoByTodoId(todoId);
 
-  Object.assign(todo, { title, content });
+  Object.assign(update<Todo>(todo), { title, content });
 
   await db.write();
 
@@ -73,9 +76,8 @@ export const updateTodo = async (req: Request, res: Response) => {
 };
 
 export const deleteTodo = async (req: Request, res: Response) => {
-  const todoId = req.params.id;
+  const { id: todoId } = req.params;
 
-  console.log(req.params);
   const todo = getTodoByTodoId(todoId);
 
   if (!todo) {
@@ -84,12 +86,9 @@ export const deleteTodo = async (req: Request, res: Response) => {
       .send(createError("unable to find designated todo"));
   }
 
-  /**
-   * Remove Todo
-   */
-  const newTodos = db.data?.todos.filter((todo) => todo.id !== todoId)!;
+  const filteredTodos = db.data?.todos.filter((todo) => todo.id !== todoId)!;
 
-  (db.data as Data).todos = newTodos;
+  (db.data as Data).todos = filteredTodos;
 
   await db.write();
 

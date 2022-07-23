@@ -5,6 +5,7 @@ import createError from "http-errors";
 import bodyParser from "body-parser";
 
 import todos from "./routes/todos";
+import users from "./routes/users";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/todos", todos);
+app.use("/users", users);
 
 app.use((req, res, next) => {
   next(createError(404));
