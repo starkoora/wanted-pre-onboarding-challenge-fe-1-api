@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
+import * as userService from "../services/userService";
 import { createError } from "../utils/responseUtils";
 import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator";
 import { createToken } from "../utils/authorizeUtils";
-import * as userService from "../services/userService";
 
 import type { UserInput } from "../types/users";
 
