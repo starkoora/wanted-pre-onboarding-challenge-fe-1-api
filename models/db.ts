@@ -1,4 +1,5 @@
 import { Low, JSONFile } from "lowdb";
+import fs from "fs/promises";
 import { join } from "path";
 import { nanoid } from "nanoid";
 import path from "path";
@@ -14,10 +15,27 @@ export interface Data {
 
 export let db: Low<Data>;
 
-export const createConnection = async () => {
+export const initDatabase = async () => {
   // Use JSON file for storage
-  const file = join(__dirname, "./db/db.json");
-  const adapter = new JSONFile<Data>(file);
+  const dbFolderPath = join(__dirname, "./db");
+  const filePath = join(__dirname, "./db/db.json");
+  const dbFolder = await fs.readdir(dbFolderPath).catch(() => void 0);
+  const file = await fs.readFile(filePath).catch(() => void 0);
+
+  if (!dbFolder) {
+    await fs.mkdir(dbFolderPath);
+  }
+  if (!file) {
+    await fs.writeFile(filePath, JSON.stringify({ todos: [], users: [] }));
+  }
+
+  return filePath;
+};
+
+export const createConnection = async () => {
+  const filePath = await initDatabase();
+
+  const adapter = new JSONFile<Data>(filePath);
   db = new Low<Data>(adapter);
 
   // Read data from JSON file, this will set db.data content
