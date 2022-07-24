@@ -1,21 +1,16 @@
 import type { Request, Response } from "express";
 
-import { create, Data, update } from "../models/db";
-import { getTodoByTodoId } from "../utils/relationUtils";
 import { StatusCodes } from "http-status-codes";
-import { db } from "../models/db";
+
 import { createError, createResponse } from "../utils/responseUtils";
-import type { Todo } from "../types/todos";
+import * as todoService from "../services/todoService";
+import type { TodoInput } from "../types/todos";
 
 export const createTodo = async (req: Request, res: Response) => {
-  const { title, content }: { title: string; content: string } = req.body;
-
-  console.log(req.body);
+  const { title, content }: TodoInput = req.body;
 
   if (title) {
-    const todo = create<Todo>({ title, content });
-    db.data?.todos.push(todo);
-    await db.write();
+    const todo = todoService.createTodo({ title, content });
 
     return res.status(StatusCodes.OK).send(createResponse(todo));
   } else {
@@ -28,7 +23,7 @@ export const createTodo = async (req: Request, res: Response) => {
 export const getTodos = async (req: Request, res: Response) => {
   const { countOnly } = req.query;
 
-  const todos = db.data?.todos;
+  const todos = todoService.findTodos();
 
   if (todos) {
     if (countOnly) {
@@ -42,10 +37,12 @@ export const getTodos = async (req: Request, res: Response) => {
   }
 };
 
-export const getTodo = (req: Request, res: Response) => {
-  const todoId = req.params.id;
+export const getTodoById = (req: Request, res: Response) => {
+  const { id: todoId } = req.params;
 
-  const todo = getTodoByTodoId(todoId);
+  const todo = todoService.findTodo((todo) => todo.id === todoId);
+
+  console.log(todo);
 
   if (todo) {
     return res.status(StatusCodes.OK).send(createResponse(todo));
@@ -60,13 +57,11 @@ export const updateTodo = async (req: Request, res: Response) => {
   const todoId = req.params.id;
   const { title, content } = req.body;
 
-  const todo = getTodoByTodoId(todoId);
-
-  Object.assign(update<Todo>(todo), { title, content });
-
-  await db.write();
+  const todo = todoService.findTodo((todo) => todo.id === todoId);
 
   if (todo) {
+    await todoService.updateTodo(todo, { title, content });
+
     return res.status(StatusCodes.OK).send(createResponse(todo));
   } else {
     return res
@@ -78,7 +73,7 @@ export const updateTodo = async (req: Request, res: Response) => {
 export const deleteTodo = async (req: Request, res: Response) => {
   const { id: todoId } = req.params;
 
-  const todo = getTodoByTodoId(todoId);
+  const todo = todoService.findTodo((todo) => todo.id === todoId);
 
   if (!todo) {
     return res
@@ -86,11 +81,7 @@ export const deleteTodo = async (req: Request, res: Response) => {
       .send(createError("unable to find designated todo"));
   }
 
-  const filteredTodos = db.data?.todos.filter((todo) => todo.id !== todoId)!;
-
-  (db.data as Data).todos = filteredTodos;
-
-  await db.write();
+  await todoService.deleteTodo(todo);
 
   return res.status(StatusCodes.OK).send(createResponse(null));
 };

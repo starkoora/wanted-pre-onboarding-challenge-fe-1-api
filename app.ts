@@ -2,6 +2,8 @@ import express from "express";
 import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import createError from "http-errors";
+import { StatusCodes } from "http-status-codes";
+
 import bodyParser from "body-parser";
 
 import todos from "./routes/todos";
@@ -29,8 +31,7 @@ app.use(
     res: Response,
     next: NextFunction
   ) => {
-    res.status(err.status || 500);
-    res.send(err);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
 );
 
