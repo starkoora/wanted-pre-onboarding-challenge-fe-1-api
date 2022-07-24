@@ -1,34 +1,4 @@
 {
-  "todos": [
-    {
-      "title": "hi",
-      "content": "hello",
-      "id": "9p_YYudABl3MGZrBYJEuD",
-      "createdAt": "2022-07-24T07:24:29.662Z",
-      "updatedAt": "2022-07-24T07:24:29.662Z"
-    },
-    {
-      "title": "hi",
-      "content": "hello",
-      "id": "2tcZ8ZLFeOBMoGPfbILDy",
-      "createdAt": "2022-07-24T07:24:31.047Z",
-      "updatedAt": "2022-07-24T07:24:31.047Z"
-    }
-  ],
-  "users": [
-    {
-      "email": "asdf@asdf.com",
-      "password": "asdfasdasdf",
-      "id": "Rjc-JQyX-MAKz_mWuIlUZ",
-      "createdAt": "2022-07-23T19:35:20.974Z",
-      "updatedAt": "2022-07-23T19:35:20.974Z"
-    },
-    {
-      "email": "asdf@aaa.com",
-      "password": "asdfasdasdf",
-      "id": "ewmWlzW3zkqmRDkHNRoAh",
-      "createdAt": "2022-07-24T06:06:34.092Z",
-      "updatedAt": "2022-07-24T06:06:34.092Z"
-    }
-  ]
+  "todos": [],
+  "users": []
 }

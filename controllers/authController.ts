@@ -22,7 +22,10 @@ export const login = async (req: Request, res: Response) => {
   );
 
   if (user) {
-    return res.status(StatusCodes.OK).send(user);
+    return res.status(StatusCodes.OK).send({
+      message: "성공적으로 로그인 했습니다",
+      token: createToken(email),
+    });
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)

@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { createError, createResponse } from "../utils/responseUtils";
 import * as todoService from "../services/todoService";
 import type { TodoInput } from "../types/todos";
+import { TODO_VALIDATION_ERRORS } from "../utils/validator";
 
 export const createTodo = async (req: Request, res: Response) => {
   const { title, content }: TodoInput = req.body;
@@ -16,7 +17,7 @@ export const createTodo = async (req: Request, res: Response) => {
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .send(createError("must provide a valid title"));
+      .send(createError(TODO_VALIDATION_ERRORS.INVALID_VALUE));
   }
 };
 
@@ -32,8 +33,8 @@ export const getTodos = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).send(createResponse(todos));
   } else {
     return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .send(createError("Unable to retrieve data from server"));
+      .status(StatusCodes.BAD_REQUEST)
+      .send(createError(TODO_VALIDATION_ERRORS.TODO_SOMETHING_WRONG));
   }
 };
 
@@ -42,14 +43,12 @@ export const getTodoById = (req: Request, res: Response) => {
 
   const todo = todoService.findTodo((todo) => todo.id === todoId);
 
-  console.log(todo);
-
   if (todo) {
     return res.status(StatusCodes.OK).send(createResponse(todo));
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .send(createError("invalid todo id"));
+      .send(createError(TODO_VALIDATION_ERRORS.TODO_SOMETHING_WRONG));
   }
 };
 
@@ -66,7 +65,7 @@ export const updateTodo = async (req: Request, res: Response) => {
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .send(createError("unable to find designated memo"));
+      .send(createError(TODO_VALIDATION_ERRORS.TODO_SOMETHING_WRONG));
   }
 };
 
@@ -78,7 +77,7 @@ export const deleteTodo = async (req: Request, res: Response) => {
   if (!todo) {
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .send(createError("unable to find designated todo"));
+      .send(createError(TODO_VALIDATION_ERRORS.TODO_SOMETHING_WRONG));
   }
 
   await todoService.deleteTodo(todo);
