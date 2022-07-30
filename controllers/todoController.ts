@@ -10,7 +10,7 @@ export const createTodo = async (req: Request, res: Response) => {
   const { title, content }: TodoInput = req.body;
 
   if (title) {
-    const todo = todoService.createTodo({ title, content });
+    const todo = await todoService.createTodo({ title, content });
 
     return res.status(StatusCodes.OK).send(createResponse(todo));
   } else {
