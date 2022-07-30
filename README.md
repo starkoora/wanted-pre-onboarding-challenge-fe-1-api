@@ -57,7 +57,7 @@
 ```bash
 > yarn
 
-> yarn dev # http://localhost:8080
+> yarn start # http://localhost:8080
 ```
 
 # 2-2) API 스펙
