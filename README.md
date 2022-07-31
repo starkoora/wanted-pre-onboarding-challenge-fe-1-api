@@ -203,6 +203,9 @@
 ### URL
 
 - POST `/users/login`
+- Parameter
+  - email: string
+  - password: string
 
 ### 응답 예시
 
@@ -218,6 +221,9 @@
 ### URL
 
 - POST `/users/create`
+- Parameter
+  - email: string
+  - password: string
 
 ### 응답 예시
 
