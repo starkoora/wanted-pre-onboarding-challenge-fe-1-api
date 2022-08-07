@@ -5,13 +5,12 @@ import { useForm } from "react-hook-form";
 
 const Home = () => {
   const [token, setToken] = useState();
-  const [todoTitle, setTodoTitle] = useState();
-  const [todoContent, setTodoContent] = useState();
   const [todos, setTodos] = useState([]);
 
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm();
 
@@ -25,11 +24,10 @@ const Home = () => {
         Authorization: `Basic ${token}`,
       },
     }).then((res) => setTodos(res.data.data));
-  }, [token, todoTitle, todoContent]);
+  }, [token, todos]);
 
   function onSubmit(data) {
-    setTodoTitle(data.title);
-    setTodoContent(data.content);
+    setTodos([...todos, data]);
 
     axios({
       method: "POST",
@@ -42,28 +40,45 @@ const Home = () => {
         content: data.content,
       },
     }).then((res) => console.log(res));
+
+    resetField("title");
+    resetField("content");
+  }
+
+  function handleDel(e) {
+    const delTargetId = e.target.parentNode.id;
+
+    axios({
+      method: "DELETE",
+      url: `http://localhost:8080/todos/${delTargetId}`,
+      headers: {
+        Authorization: `Basic ${token}`,
+      },
+    });
   }
 
   return (
     <div>
       <TodoSection>
-        {todos &&
-          todos.map((el) => {
-            return (
-              <div key={el.title}>
-                <span>Title : {el.title}</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>Content : {el.content}</span>
-              </div>
-            );
-          })}
+        <ul className="todoList">
+          {todos &&
+            todos.map((el, idx) => {
+              return (
+                <li key={idx} id={el.id}>
+                  <span className="title">{el.title}</span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <span>Content : {el.content}</span>
+                  <button onClick={handleDel}>삭제</button>
+                </li>
+              );
+            })}
+        </ul>
         <form>
           <input placeholder="title" {...register("title")} />
           <input placeholder="content" {...register("content")} />
         </form>
         <TodoBtn onClick={handleSubmit(onSubmit)}>추가</TodoBtn>
         <TodoBtn>수정</TodoBtn>
-        <TodoBtn>삭제</TodoBtn>
       </TodoSection>
     </div>
   );
