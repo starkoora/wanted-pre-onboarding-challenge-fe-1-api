@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useEffect } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 const Auth = () => {
@@ -9,10 +9,26 @@ const Auth = () => {
     formState: { errors },
   } = useForm();
 
-  console.log(errors);
+  useEffect(() => {
+    if (window.localStorage.getItem("token")) {
+      window.location.href = "/";
+    }
+  }, []);
 
   const onSubmit = (data) => {
-    console.log(data);
+    const email = data.email;
+    const pw = data.pw;
+
+    axios({
+      method: "post",
+      url: "http://localhost:8080/users/login",
+      data: {
+        email: email,
+        password: pw,
+      },
+    }).then((res) => {
+      window.localStorage.setItem("token", res.data.token);
+    });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
