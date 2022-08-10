@@ -15,8 +15,14 @@ const Home = () => {
   } = useForm();
 
   useEffect(() => {
-    setToken(window.localStorage.getItem("token"));
+    getToken();
+    if (token === null) {
+      window.location.href = "/auth";
+    }
+    getTodos();
+  }, [token]);
 
+  const getTodos = () => {
     axios({
       method: "GET",
       url: "http://localhost:8080/todos",
@@ -24,11 +30,14 @@ const Home = () => {
         Authorization: `Basic ${token}`,
       },
     }).then((res) => setTodos(res.data.data));
-  }, [token, todos]);
+  };
+
+  const getToken = () => {
+    setToken(window.localStorage.getItem("token"));
+    console.log(token);
+  };
 
   function onSubmit(data) {
-    setTodos([...todos, data]);
-
     axios({
       method: "POST",
       url: "http://localhost:8080/todos",
@@ -39,7 +48,7 @@ const Home = () => {
         title: data.title,
         content: data.content,
       },
-    }).then((res) => console.log(res));
+    }).then((res) => setTodos([...todos, res.data.data]));
 
     resetField("title");
     resetField("content");
@@ -54,7 +63,7 @@ const Home = () => {
       headers: {
         Authorization: `Basic ${token}`,
       },
-    });
+    }).then((res) => getTodos());
   }
 
   return (

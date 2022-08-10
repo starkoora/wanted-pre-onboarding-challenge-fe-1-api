@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 
-const Auth = () => {
+const Auth = (data) => {
+  const [token, setToken] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -10,10 +12,12 @@ const Auth = () => {
   } = useForm();
 
   useEffect(() => {
-    if (window.localStorage.getItem("token")) {
+    setToken(window.localStorage.getItem("token"));
+
+    if (token) {
       window.location.href = "/";
     }
-  }, []);
+  }, [token]);
 
   const onSubmit = (data) => {
     const email = data.email;
@@ -28,6 +32,7 @@ const Auth = () => {
       },
     }).then((res) => {
       window.localStorage.setItem("token", res.data.token);
+      setToken(res.data.token);
     });
   };
   return (
@@ -54,7 +59,8 @@ const Auth = () => {
         })}
       />
       <p>{errors.pw?.message}</p>
-      <input type="submit" />
+      <button type="submit">로그인</button>
+      <button type="submit">회원가입</button>
     </form>
   );
 };
