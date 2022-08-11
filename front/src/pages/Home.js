@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
@@ -34,7 +34,6 @@ const Home = () => {
 
   const getToken = () => {
     setToken(window.localStorage.getItem("token"));
-    console.log(token);
   };
 
   function onSubmit(data) {
@@ -66,6 +65,22 @@ const Home = () => {
     }).then((res) => getTodos());
   }
 
+  function handleEdit(e) {
+    const editTargetId = e.target.parentNode.id;
+
+    axios({
+      method: "PUT",
+      url: `http://localhost:8080/todos/${editTargetId}`,
+      data: {
+        title: "edited",
+        content: "edited",
+      },
+      headers: {
+        Authorization: `Basic ${token}`,
+      },
+    }).then((res) => getTodos());
+  }
+
   return (
     <div>
       <TodoSection>
@@ -76,8 +91,10 @@ const Home = () => {
                 <li key={idx} id={el.id}>
                   <span className="title">{el.title}</span>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <span>Content : {el.content}</span>
+                  <span className="content"> {el.content}</span>
                   <button onClick={handleDel}>삭제</button>
+                  <button onClick={handleEdit}>수정</button>
+                  <hr />
                 </li>
               );
             })}
@@ -87,7 +104,6 @@ const Home = () => {
           <input placeholder="content" {...register("content")} />
         </form>
         <TodoBtn onClick={handleSubmit(onSubmit)}>추가</TodoBtn>
-        <TodoBtn>수정</TodoBtn>
       </TodoSection>
     </div>
   );
