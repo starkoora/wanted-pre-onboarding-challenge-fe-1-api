@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "components/atoms/Button";
+import Input from "components/atoms/Input";
 
-const TodoInput = () => {
+const TodoInput = (props: any) => {
   return (
     <TodoInputWrapper>
-      <Input />
-      <Button name="ADD TODO" />
+      <Input placeholder="todo 제목을 입력하세요" />
+      <Input placeholder="todo 내용을 입력하세요" />
+      <Button onClick={props.callback} name="ADD TODO" />
     </TodoInputWrapper>
   );
 };
@@ -19,11 +21,4 @@ const TodoInputWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-const Input = styled.input`
-  width: 80%;
-  height: 3em;
-  border-radius: 0.5rem;
-  border-style: none;
-  background-color: #232e3f;
 `;

@@ -2,13 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import Button from "components/atoms/Button";
 
-const TodoItem = () => {
+type TodoType = {
+  value: string;
+};
+const TodoItem = (props: TodoType) => {
   return (
     <Wrapper>
-      TodoItem
+      {props.value}
       <div>
-        <Button name="EDIT" />
-        <Button name="DELETE" />
+        <Button onClick={() => console.log("edit")} name="EDIT" />
+        <Button onClick={() => console.log("delete")} name="DELETE" />
       </div>
     </Wrapper>
   );
