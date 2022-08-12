@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 
 const Home = () => {
   const [token, setToken] = useState();
   const [todos, setTodos] = useState([]);
+  const [edit, setEdit] = useState(false);
 
   const {
     register,
@@ -66,19 +67,52 @@ const Home = () => {
   }
 
   function handleEdit(e) {
-    const editTargetId = e.target.parentNode.id;
+    const editTarget = e.target.parentNode;
+    const beforeEditTitle = editTarget.querySelector(".title").innerHTML;
+    const beforeEditContent = editTarget.querySelector(".content").innerHTML;
 
-    axios({
-      method: "PUT",
-      url: `http://localhost:8080/todos/${editTargetId}`,
-      data: {
-        title: "edited",
-        content: "edited",
-      },
-      headers: {
-        Authorization: `Basic ${token}`,
-      },
-    }).then((res) => getTodos());
+    const li = document.createElement("li");
+    li.classList.add("editInputs");
+    const editInputTitle = document.createElement("input");
+    editInputTitle.setAttribute("value", beforeEditTitle);
+    editInputTitle.classList.add("editTitle");
+    const editInputContent = document.createElement("input");
+    editInputContent.setAttribute("value", beforeEditContent);
+    editInputContent.classList.add("editContent");
+    const editConfirmButton = document.createElement("button");
+    editConfirmButton.innerText = "수정확인";
+
+    e.target.parentNode.remove();
+    const ul = document.querySelector(".todoList");
+    li.append(editInputTitle, editInputContent, editConfirmButton);
+    ul.appendChild(li);
+    editConfirmButton.addEventListener("click", function () {
+      const title = document.querySelector(".editTitle").value;
+      const content = document.querySelector(".editContent").value;
+
+      axios({
+        method: "PUT",
+        url: `http://localhost:8080/todos/${editTarget.id}`,
+        data: {
+          title: title,
+          content: content,
+        },
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+      }).then((res) => {
+        getTodos();
+
+        const ul = document.querySelector(".todoList");
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${res.data.data.title}</span><br /><span>${res.data.data.content}</span>`;
+        ul.append(li);
+        const editInputs = document.querySelector(".editInputs");
+        editInputs.remove();
+
+        setEdit(!edit);
+      });
+    });
   }
 
   return (
@@ -90,7 +124,7 @@ const Home = () => {
               return (
                 <li key={idx} id={el.id}>
                   <span className="title">{el.title}</span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <br />
                   <span className="content"> {el.content}</span>
                   <button onClick={handleDel}>삭제</button>
                   <button onClick={handleEdit}>수정</button>
