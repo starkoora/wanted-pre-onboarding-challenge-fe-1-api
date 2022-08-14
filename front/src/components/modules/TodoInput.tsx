@@ -6,8 +6,8 @@ import Input from "components/atoms/Input";
 const TodoInput = (props: any) => {
   return (
     <TodoInputWrapper>
-      <Input placeholder="todo 제목을 입력하세요" />
-      <Input placeholder="todo 내용을 입력하세요" />
+      <Input placeholder="todo 제목을 입력하세요" width="80%" />
+      <Input placeholder="todo 내용을 입력하세요" width="80%" />
       <Button onClick={props.callback} name="ADD TODO" />
     </TodoInputWrapper>
   );

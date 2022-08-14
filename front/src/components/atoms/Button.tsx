@@ -7,7 +7,6 @@ type ButtonProps = {
 };
 
 const Button = (props: ButtonProps) => {
-  console.log(props.onClick);
   return <Btn onClick={props.onClick}>{props.name}</Btn>;
 };
 
