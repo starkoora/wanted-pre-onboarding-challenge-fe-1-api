@@ -4,19 +4,17 @@ import styled from "styled-components";
 type InputProps = {
   placeholder: string;
   width?: string;
-  onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
+  id?: string;
 };
 
 const Input = (props: InputProps) => {
-  return (
-    <InputSection onChange={props.onChange} placeholder={props.placeholder} />
-  );
+  return <InputSection id={props.id} placeholder={props.placeholder} />;
 };
 
 export default Input;
 
 const InputSection = styled.input`
-  width: ${(props) => (props.width ? props.width : "10%")};
+  width: ${(props) => (props.width ? props.width : "100%")};
   height: 3rem;
   padding: 0 1rem;
   margin: 1rem;

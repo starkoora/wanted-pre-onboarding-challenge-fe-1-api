@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 type ButtonProps = {
   name: string;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 const Button = (props: ButtonProps) => {
