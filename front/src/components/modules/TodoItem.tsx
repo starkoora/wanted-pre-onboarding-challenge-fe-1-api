@@ -4,14 +4,17 @@ import Button from "components/atoms/Button";
 
 type TodoType = {
   value: string;
+  id: string;
+  onClick: any;
 };
+
 const TodoItem = (props: TodoType) => {
   return (
-    <Wrapper>
-      {props.value}
+    <Wrapper id={props.id}>
+      <div>{props.value}</div>
       <div>
-        <Button onClick={() => console.log("edit")} name="EDIT" />
-        <Button onClick={() => console.log("delete")} name="DELETE" />
+        <Button onClick={props.onClick} name="EDIT" />
+        <Button onClick={props.onClick} name="DELETE" />
       </div>
     </Wrapper>
   );
@@ -19,7 +22,7 @@ const TodoItem = (props: TodoType) => {
 
 export default TodoItem;
 
-const Wrapper = styled.div`
+const Wrapper = styled.li`
   display: flex;
   justify-content: space-between;
   width: 100%;
