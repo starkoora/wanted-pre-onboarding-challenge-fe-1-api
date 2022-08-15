@@ -4,6 +4,7 @@ import CenterSection from "components/template/CenterSection";
 import TodoInput from "components/modules/TodoInput";
 import TodoItem from "components/modules/TodoItem";
 import axios from "axios";
+import LogOutButton from "components/modules/LogoutButton";
 
 type TodosType = {
   title: string;
@@ -74,9 +75,15 @@ const Home = () => {
     }
   };
 
+  function handleLogOut() {
+    window.localStorage.removeItem("token");
+    getToken();
+  }
+
   return (
     <CenterSection>
       <Header title="Todo List 2022" />
+      <LogOutButton onClick={handleLogOut} name="Logout" />
       <TodoInput onClick={handleInputClick} />
       <Header title="Todos" />
       <ul>
