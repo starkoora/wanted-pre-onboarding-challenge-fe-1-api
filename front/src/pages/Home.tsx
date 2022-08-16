@@ -4,7 +4,7 @@ import CenterSection from "components/template/CenterSection";
 import TodoInput from "components/modules/TodoInput";
 import TodoItem from "components/modules/TodoItem";
 import axios from "axios";
-import LogOutButton from "components/modules/LogoutButton";
+import LogOutButton from "components/modules/LogOutButton";
 
 type TodosType = {
   title: string;
@@ -61,8 +61,11 @@ const Home = () => {
   };
 
   const handleTodoClick = (event: any) => {
-    const targetText = event.target.innerText;
-    const targetId = event.target.parentNode.parentNode.id;
+    const target = event.target;
+    const targetLi = target.parentNode.parentNode;
+    const targetInput = targetLi.children[0];
+    const targetId = targetLi.id;
+    const targetText = target.innerText;
 
     if (targetText === "DELETE") {
       axios({
@@ -72,6 +75,25 @@ const Home = () => {
           Authorization: `Basic ${token}`,
         },
       }).then((res) => getTodos());
+    } else if (targetText === "EDIT") {
+      target.innerText = "SAVE";
+      targetInput.removeAttribute("readonly");
+    }
+
+    if (targetText === "SAVE") {
+      targetInput.setAttribute("readonly", "readonly");
+      target.innerText = "EDIT";
+
+      axios({
+        method: "PUT",
+        url: `http://localhost:8080/todos/${targetId}`,
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+        data: {
+          title: targetInput.value,
+        },
+      });
     }
   };
 
