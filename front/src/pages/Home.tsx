@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import Header from "components/modules/Header";
 import CenterSection from "components/template/CenterSection";
 import TodoInput from "components/modules/TodoInput";
 import TodoItem from "components/modules/TodoItem";
-import axios from "axios";
 import LogOutButton from "components/modules/LogOutButton";
+import axios from "axios";
 
 type TodosType = {
   title: string;
@@ -32,6 +33,7 @@ const Home = () => {
         content: content,
       },
     }).then((res) => {
+      console.log(res);
       setTodos([...todos, res.data.data]);
     });
   }
@@ -42,6 +44,7 @@ const Home = () => {
       window.location.href = "/auth";
     }
     getTodos();
+    console.log(todos);
   }, [token]);
 
   const getToken = () => {
@@ -66,6 +69,7 @@ const Home = () => {
     const targetInput = targetLi.children[0];
     const targetId = targetLi.id;
     const targetText = target.innerText;
+    const targetDetail = targetLi.parentNode.children[1];
 
     if (targetText === "DELETE") {
       axios({
@@ -76,13 +80,17 @@ const Home = () => {
         },
       }).then((res) => getTodos());
     } else if (targetText === "EDIT") {
+      targetInput.focus();
       target.innerText = "SAVE";
       targetInput.removeAttribute("readonly");
+      targetDetail.removeAttribute("readonly");
+      targetDetail.classList.add("showUp");
     }
 
     if (targetText === "SAVE") {
-      targetInput.setAttribute("readonly", "readonly");
       target.innerText = "EDIT";
+      targetInput.setAttribute("readonly", "readonly");
+      targetDetail.setAttribute("readonly", "readonly");
 
       axios({
         method: "PUT",
@@ -92,8 +100,20 @@ const Home = () => {
         },
         data: {
           title: targetInput.value,
+          content: targetDetail.value,
         },
       });
+    }
+  };
+
+  const clickTodoListItem = (event: any) => {
+    const targetLi = event.target.parentNode.parentNode;
+    const targetLiDetail = targetLi.children[1];
+
+    if (targetLiDetail.className.includes("showUp")) {
+      targetLiDetail.classList.remove("showUp");
+    } else {
+      targetLiDetail.classList.add("showUp");
     }
   };
 
@@ -105,8 +125,12 @@ const Home = () => {
   return (
     <CenterSection>
       <Header title="Todo List 2022" />
-      <LogOutButton onClick={handleLogOut} name="Logout" />
+      <LogOutWrapper>
+        <LogOutButton onClick={handleLogOut} name="Logout" />
+      </LogOutWrapper>
+      <hr />
       <TodoInput onClick={handleInputClick} />
+      <hr />
       <Header title="Todos" />
       <ul>
         {todos &&
@@ -115,7 +139,9 @@ const Home = () => {
               key={idx}
               id={todo.id}
               value={todo.title}
+              content={todo.content}
               onClick={handleTodoClick}
+              onClickList={clickTodoListItem}
             />
           ))}
       </ul>
@@ -124,3 +150,8 @@ const Home = () => {
 };
 
 export default Home;
+
+const LogOutWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
