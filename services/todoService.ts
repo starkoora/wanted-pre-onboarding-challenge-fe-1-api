@@ -19,7 +19,7 @@ export const findTodo = (predicate: (todo: Todo) => boolean) => {
 };
 
 export const updateTodo = async (todo: Todo, todoValue: Partial<Todo>) => {
-  update<Todo>(Object.assign(todo, todoValue));
+  Object.assign(todo, update<Todo>({ ...todo, ...todoValue })); 
 
   await db.write();
 
