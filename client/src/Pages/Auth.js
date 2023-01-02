@@ -27,6 +27,11 @@ const Auth = () => {
           </form>
         </>
       )}
+      {newAccount ? (
+        <button onClick={toggleAccount}>로그인 하러 가기</button>
+      ) : (
+        <button onClick={toggleAccount}>회원가입 하러 가기</button>
+      )}
     </>
   );
 };
