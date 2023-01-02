@@ -12,12 +12,14 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Todo />} />
+            <Route path="/*" element={<Todo />} />
           </Routes>
         </BrowserRouter>
       ) : (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/*" element={<Auth />} />
           </Routes>
         </BrowserRouter>
       )}
