@@ -5,6 +5,7 @@ import * as todoService from "../services/todoService";
 import { createError, createResponse } from "../utils/responseUtils";
 import { TODO_VALIDATION_ERRORS } from "../utils/validator";
 import type { TodoInput } from "../types/todos";
+import { responseDelayMS } from '../consts/delay';
 
 export const createTodo = async (req: Request, res: Response) => {
   const { title, content }: TodoInput = req.body;
@@ -26,10 +27,12 @@ export const getTodos = async (req: Request, res: Response) => {
   const todos = todoService.findTodos();
 
   if (todos) {
-    if (countOnly) {
-      return res.status(StatusCodes.OK).send(createResponse(todos.length));
-    }
-    return res.status(StatusCodes.OK).send(createResponse(todos));
+      setTimeout(() => {
+        if (countOnly) {
+            return res.status(StatusCodes.OK).send(createResponse(todos.length));
+          }
+          return res.status(StatusCodes.OK).send(createResponse(todos));
+      }, responseDelayMS);
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -43,7 +46,9 @@ export const getTodoById = (req: Request, res: Response) => {
   const todo = todoService.findTodo((todo) => todo.id === todoId);
 
   if (todo) {
-    return res.status(StatusCodes.OK).send(createResponse(todo));
+      setTimeout(() => {
+        return res.status(StatusCodes.OK).send(createResponse(todo));
+      }, responseDelayMS);
   } else {
     return res
       .status(StatusCodes.BAD_REQUEST)
