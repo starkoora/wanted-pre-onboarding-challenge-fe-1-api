@@ -1,11 +1,9 @@
-import express from "express";
-import type { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import express from "express";
 import createError from "http-errors";
-import { StatusCodes } from "http-status-codes";
-
 import bodyParser from "body-parser";
 
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import todoRouter from "./routes/todoRouter";
 import userRouter from "./routes/userRouter";
 
@@ -24,15 +22,6 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
-app.use(
-  (
-    err: Error & { status: number },
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
-  }
-);
+app.use(globalErrorHandler);
 
 export default app;
