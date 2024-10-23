@@ -1,27 +1,26 @@
-import cors from "cors";
-import express from "express";
-import createError from "http-errors";
-import bodyParser from "body-parser";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
 
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import todoRouter from "./routes/todoRouter";
 import userRouter from "./routes/userRouter";
+import { createError } from "./utils/responseUtils";
+import { StatusCodes } from "http-status-codes";
 
-const app = express();
+const app = new Hono();
 
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use("*", cors());
 
-app.use(cors());
+app.route("/todos", todoRouter);
+app.route("/users", userRouter);
 
-app.use("/todos", todoRouter);
-app.use("/users", userRouter);
-
-app.use((req, res, next) => {
-  next(createError(404));
+app.notFound((c) => {
+  return c.json(createError("Not Found"), StatusCodes.NOT_FOUND);
 });
 
-app.use(globalErrorHandler);
+app.onError(globalErrorHandler);
+
+const port = process.env.PORT || 8080;
+console.log(`Now listening on port ${port}`);
 
 export default app;

@@ -1,11 +1,15 @@
-import type { Request, Response, NextFunction } from "express";
+import { Context } from "hono";
+import { HTTPResponseError } from "hono/types";
+import { StatusCodes } from "http-status-codes";
+import { createError } from "../utils/responseUtils";
 
 export const globalErrorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
+  err: Error | HTTPResponseError,
+  c: Context
 ) => {
   console.error(err);
-  res.status(500).send("Something went wrong");
+  return c.json(
+    createError("Something went wrong"),
+    StatusCodes.INTERNAL_SERVER_ERROR
+  );
 };
