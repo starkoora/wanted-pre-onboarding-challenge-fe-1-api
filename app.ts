@@ -20,7 +20,4 @@ app.notFound((c) => {
 
 app.onError(globalErrorHandler);
 
-const port = process.env.PORT || 8080;
-console.log(`Now listening on port ${port}`);
-
 export default app;
