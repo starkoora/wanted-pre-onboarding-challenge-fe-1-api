@@ -14,55 +14,57 @@ export interface Data {
   users: User[];
 }
 
-export let db: Low<Data>;
+export namespace DB {
+  export let instance: Low<Data>;
 
-export const initDatabase = async () => {
-  // Use JSON file for storage
-  const dbFolderPath = join(__dirname, "./db");
-  const filePath = join(__dirname, "./db/db.json");
-  const dbFolder = await fs.readdir(dbFolderPath).catch(() => void 0);
-  const file = await fs.readFile(filePath).catch(() => void 0);
+  export const initDatabase = async () => {
+    // Use JSON file for storage
+    const dbFolderPath = join(__dirname, "./db");
+    const filePath = join(__dirname, "./db/db.json");
+    const dbFolder = await fs.readdir(dbFolderPath).catch(() => void 0);
+    const file = await fs.readFile(filePath).catch(() => void 0);
 
-  if (!dbFolder) {
-    await fs.mkdir(dbFolderPath);
-  }
-  if (!file) {
-    await fs.writeFile(filePath, JSON.stringify({ todos: [], users: [] }));
-  }
+    if (!dbFolder) {
+      await fs.mkdir(dbFolderPath);
+    }
+    if (!file) {
+      await fs.writeFile(filePath, JSON.stringify({ todos: [], users: [] }));
+    }
 
-  return filePath;
-};
-
-export const createConnection = async () => {
-  const filePath = await initDatabase();
-
-  const adapter = new JSONFile<Data>(filePath);
-  db = new Low<Data>(adapter);
-
-  // Read data from JSON file, this will set db.data content
-  await db.read();
-
-  db.data ||= { todos: [], users: [] };
-  // Write db.data content to db.json
-  await db.write();
-};
-
-export const getConnection = () => db;
-
-export const create = <T>(content: any): T => {
-  const timestamp = new Date().toISOString();
-  return {
-    ...content,
-    id: nanoid(),
-    createdAt: timestamp,
-    updatedAt: timestamp,
+    return filePath;
   };
-};
 
-export const update = <T>(content: any): T => {
-  const timestamp = new Date().toISOString();
-  return {
-    ...content,
-    updatedAt: timestamp,
+  export const createConnection = async () => {
+    const filePath = await initDatabase();
+
+    const adapter = new JSONFile<Data>(filePath);
+    instance = new Low<Data>(adapter);
+
+    // Read data from JSON file, this will set db.data content
+    await instance.read();
+
+    instance.data ||= { todos: [], users: [] };
+    // Write db.data content to db.json
+    await instance.write();
   };
-};
+
+  export const getConnection = () => instance;
+
+  export const create = <T>(content: any): T => {
+    const timestamp = new Date().toISOString();
+    return {
+      ...content,
+      id: nanoid(),
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+  };
+
+  export const update = <T>(content: any): T => {
+    const timestamp = new Date().toISOString();
+    return {
+      ...content,
+      updatedAt: timestamp,
+    };
+  };
+}

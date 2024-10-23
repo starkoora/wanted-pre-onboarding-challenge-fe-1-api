@@ -1,7 +1,7 @@
-import { createConnection } from "./models/db";
+import { DB } from "./models/db";
 import app from "./app";
 
-createConnection();
+DB.createConnection();
 
 const port = process.env.PORT || 8080;
 
