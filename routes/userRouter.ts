@@ -3,7 +3,7 @@ import * as authController from "../controllers/authController";
 
 const router = new Hono();
 
-router.get("/login", authController.login);
-router.get("/create", authController.signUp);
+router.post("/login", authController.login);
+router.post("/create", authController.signUp);
 
 export default router;
