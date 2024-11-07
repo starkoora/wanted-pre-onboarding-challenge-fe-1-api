@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { Context } from "hono";
 import { StatusCodes } from "http-status-codes";
 
 import * as userService from "../services/userService";
@@ -7,11 +7,10 @@ import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator";
 import { createToken } from "../utils/authorizeUtils";
 
 import type { UserInput } from "../types/users";
-import { Context } from "hono";
 
 // 로그인
 export const login = async (c: Context) => {
-  const { email, password }: UserInput = await c.req.parseBody();
+  const { email, password }: UserInput = await c.req.json();
 
   const { isValid, message } = loginValidator({ email, password });
   if (!isValid) {
@@ -37,7 +36,7 @@ export const login = async (c: Context) => {
 
 // 회원 가입
 export const signUp = async (c: Context) => {
-  const { email, password }: UserInput = await c.req.parseBody();
+  const { email, password }: UserInput = await c.req.json();
 
   const { isValid, message } = loginValidator({ email, password });
   if (!isValid) {
