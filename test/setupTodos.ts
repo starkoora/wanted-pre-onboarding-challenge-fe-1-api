@@ -41,17 +41,14 @@ export const createTodo = async (todo: TodoInput, token: string) => {
 
   return client.index.$post(
     { json: todo },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: token } }
   );
 };
 
 export const getTodo = async (id: string, token: string) => {
   const client = testClient(todoRouter);
 
-  return client.index.$get(
-    { id },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  return client.index.$get({ id }, { headers: { Authorization: token } });
 };
 
 export const updateTodo = async (
@@ -67,7 +64,7 @@ export const updateTodo = async (
       // @ts-ignore - put 메서드에 대한 타입 추론 활성화 시킬 수 있는 방법 찾기
       json: todo,
     },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: token } }
   );
 };
 
@@ -76,6 +73,6 @@ export const deleteTodo = async (id: string, token: string) => {
 
   return client[":id"].$delete(
     { param: { id } },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: token } }
   );
 };

@@ -45,7 +45,7 @@ describe("Todos API", () => {
 
       const response = await client.index.$get(
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: token } }
       );
       const body = await response.json();
 
