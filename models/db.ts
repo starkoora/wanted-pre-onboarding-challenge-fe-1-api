@@ -17,10 +17,10 @@ export interface Data {
 export namespace DB {
   export let instance: Low<Data>;
 
-  export const initDatabase = async () => {
+  export const initDatabase = async ({ filename }: { filename: string }) => {
     // Use JSON file for storage
     const dbFolderPath = join(__dirname, "./db");
-    const filePath = join(__dirname, "./db/db.json");
+    const filePath = join(__dirname, `./db/${filename}`);
     const dbFolder = await fs.readdir(dbFolderPath).catch(() => void 0);
     const file = await fs.readFile(filePath).catch(() => void 0);
 
@@ -34,10 +34,13 @@ export namespace DB {
     return filePath;
   };
 
-  export const createConnection = async (
-    options: { preserve?: boolean } = { preserve: true }
-  ) => {
-    const filePath = await initDatabase();
+  export const createConnection = async (options: {
+    filename?: string;
+    preserve?: boolean;
+  }) => {
+    const filePath = await initDatabase({
+      filename: options.filename ?? "db.json",
+    });
 
     const adapter = new JSONFile<Data>(filePath);
     instance = new Low<Data>(adapter);

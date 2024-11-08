@@ -9,7 +9,7 @@ import type { TodoInput } from "../types/todos.js";
 export const createTodo = async (c: Context) => {
   const params: TodoInput = await c.req.json();
 
-  if (params.title) {
+  if (Object.values(params).every(Boolean)) {
     const todo = await todoService.createTodo(params);
 
     return c.json(createResponse(todo), StatusCodes.OK);
@@ -23,8 +23,9 @@ export const createTodo = async (c: Context) => {
 
 export const getTodos = async (c: Context) => {
   const query = c.req.query();
+  const options = c.req.param();
 
-  const todos = todoService.findTodos();
+  const todos = todoService.findTodos(options);
 
   if (todos) {
     if (query.countOnly) {
@@ -56,12 +57,12 @@ export const getTodoById = (c: Context) => {
 
 export const updateTodo = async (c: Context) => {
   const { id: todoId } = c.req.param();
-  const { title, content }: TodoInput = await c.req.json();
+  const params: TodoInput = await c.req.json();
 
   const todo = todoService.findTodo((todo) => todo.id === todoId);
 
   if (todo) {
-    await todoService.updateTodo(todo, { title, content });
+    await todoService.updateTodo(todo, params);
 
     return c.json(createResponse(todo), StatusCodes.OK);
   } else {

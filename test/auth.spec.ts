@@ -4,7 +4,7 @@ import { DB } from "../models/db.js";
 import { createUser, login, user } from "./setupUser.js";
 
 beforeAll(async () => {
-  await DB.createConnection({ preserve: false });
+  await DB.createConnection({ preserve: false, filename: "test.json" });
 });
 
 describe("User API", () => {

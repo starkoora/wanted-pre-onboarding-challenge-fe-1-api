@@ -14,4 +14,5 @@ export interface FindTodosOptions {
   order?: "asc" | "desc";
   priorityFilter?: Todo["priority"];
   keyword?: string;
+  countOnly?: boolean;
 }
