@@ -1,5 +1,5 @@
 import { testClient } from "hono/testing";
-import userRouter from "../routes/userRouter";
+import userRouter from "../routes/userRouter.js";
 
 export const createUser = (params: { email: string; password: string }) => {
   const client = testClient(userRouter);

@@ -1,12 +1,12 @@
 import { Context } from "hono";
 import { StatusCodes } from "http-status-codes";
 
-import * as userService from "../services/userService";
-import { createError } from "../utils/responseUtils";
-import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator";
-import { createToken } from "../utils/authorizeUtils";
+import * as userService from "../services/userService.js";
+import { createError } from "../utils/responseUtils.js";
+import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator.js";
+import { createToken } from "../utils/authorizeUtils.js";
 
-import type { UserInput } from "../types/users";
+import type { UserInput } from "../types/users.js";
 
 // 로그인
 export const login = async (c: Context) => {

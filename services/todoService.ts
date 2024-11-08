@@ -1,8 +1,8 @@
-import { todoRepository } from "../repositories/todoRepository";
-import type { Todo, TodoInput } from "../types/todos";
+import { todoRepository } from "../repositories/todoRepository.js";
+import type { Todo, TodoInput } from "../types/todos.js";
 
-export const createTodo = async ({ title, content }: TodoInput) => {
-  return todoRepository.create({ title, content });
+export const createTodo = async (params: TodoInput) => {
+  return todoRepository.create(params);
 };
 
 export const findTodos = () => {

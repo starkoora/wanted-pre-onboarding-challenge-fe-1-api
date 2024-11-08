@@ -1,4 +1,5 @@
-import validator from "validator";
+import { default as _validator } from "validator";
+const validator = _validator.default; // FIXME: module import 관련 이슈
 
 export const loginValidator = (loginForm: {
   email: string;

@@ -1,10 +1,11 @@
 import { testClient } from "hono/testing";
-import todoRouter from "../routes/todoRouter";
-import { TodoInput } from "../types/todos";
+import todoRouter from "../routes/todoRouter.js";
+import { TodoInput } from "../types/todos.js";
 
-export const todo = {
+export const todo: TodoInput = {
   title: "New Todo",
   content: "This is a new todo",
+  priority: "normal",
 };
 
 export const createTodo = async (todo: TodoInput, token: string) => {

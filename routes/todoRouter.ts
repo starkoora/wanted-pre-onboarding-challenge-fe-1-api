@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import * as todoController from "../controllers/todoController";
-import { validateToken } from "../middleware/validateToken";
+import * as todoController from "../controllers/todoController.js";
+import { validateToken } from "../middleware/validateToken.js";
 
 const router = new Hono()
   .use("*", validateToken)
