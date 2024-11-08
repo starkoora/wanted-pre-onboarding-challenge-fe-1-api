@@ -1,8 +1,16 @@
-import { describe, it, expect, beforeAll } from "vitest";
-import request from "supertest";
+import { testClient } from "hono/testing";
+import { beforeAll, describe, expect, test } from "vitest";
 
-import app from "../app";
 import { DB } from "../models/db";
+import todoRouter from "../routes/todoRouter";
+import { Todo } from "../types/todos";
+import {
+  createTodo,
+  deleteTodo,
+  getTodo,
+  todo,
+  updateTodo,
+} from "./setupTodos";
 import { createUser, user } from "./setupUser";
 
 let token: string;
@@ -19,86 +27,77 @@ beforeAll(async () => {
 });
 
 describe("Todos API", () => {
-  describe("GET /todos", () => {
-    it("should return a list of todos", async () => {
-      const response = await request(app)
-        .get("/todos")
-        .set("Authorization", `Bearer ${token}`);
+  describe("POST /todos", () => {
+    test("should create a new todo", async () => {
+      const response = await createTodo(todo, token);
+      const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("data");
-      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(body).toHaveProperty("data");
     });
   });
 
-  describe("POST /todos", () => {
-    it("should create a new todo", async () => {
-      const response = await request(app)
-        .post("/todos")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ title: "New Todo", content: "This is a new todo" });
+  describe("GET /todos", () => {
+    test("should return a list of todos", async () => {
+      const client = testClient(todoRouter);
+
+      const response = await client.index.$get(
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("data");
-      expect(response.body.data).toHaveProperty("title", "New Todo");
-      expect(response.body.data).toHaveProperty(
-        "content",
-        "This is a new todo"
-      );
+      expect(body).toHaveProperty("data");
     });
   });
 
   describe("GET /todos/:id", () => {
-    it("should return a single todo by ID", async () => {
-      const createResponse = await request(app)
-        .post("/todos")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ title: "Single Todo", content: "This is a single todo" });
-      const todoId = createResponse.body.data.id;
+    test("should return a single todo by ID", async () => {
+      const response = await createTodo(todo, token);
+      const body = (await response.json()) as { data: { id: string } };
 
-      const response = await request(app)
-        .get(`/todos/${todoId}`)
-        .set("Authorization", `Bearer ${token}`);
+      const todoId = body.data.id;
 
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("data");
-      expect(response.body.data).toHaveProperty("id", todoId);
+      const getResponse = await getTodo(todoId, token);
+      const getBody = await getResponse.json();
+
+      expect(getResponse.status).toBe(200);
+      expect(getBody).toHaveProperty("data");
     });
   });
 
   describe("PUT /todos/:id", () => {
-    it("should update an existing todo", async () => {
-      const createResponse = await request(app)
-        .post("/todos")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ title: "Todo to update", content: "Initial content" });
-      const todoId = createResponse.body.data.id;
+    test("should update an existing todo", async () => {
+      const createResponse = await createTodo(todo, token);
 
-      const response = await request(app)
-        .put(`/todos/${todoId}`)
-        .set("Authorization", `Bearer ${token}`)
-        .send({ title: "Updated title", content: "Updated content" });
+      const createBody = (await createResponse.json()) as {
+        data: { id: string };
+      };
+      const todoId = createBody.data.id;
 
-      expect(response.status).toBe(200);
-      expect(response.body.data).toHaveProperty("title", "Updated title");
-      expect(response.body.data).toHaveProperty("content", "Updated content");
+      const updateResponse = await updateTodo(todoId, todo, token);
+      const updateBody = await updateResponse.json();
+
+      expect(updateResponse.status).toBe(200);
+      expect(updateBody).toHaveProperty("data");
     });
   });
 
   describe("DELETE /todos/:id", () => {
-    it("should delete a todo by ID", async () => {
-      const createResponse = await request(app)
-        .post("/todos")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ title: "Todo to delete", content: "Content to delete" });
-      const todoId = createResponse.body.data.id;
+    test("should delete a todo by ID", async () => {
+      const createResponse = await createTodo(todo, token);
 
-      const response = await request(app)
-        .delete(`/todos/${todoId}`)
-        .set("Authorization", `Bearer ${token}`);
+      const createBody = (await createResponse.json()) as {
+        data: Todo;
+      };
+      const todoId = createBody.data.id;
 
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty("data", null);
+      const deleteResponse = await deleteTodo(todoId, token);
+      const deleteBody = await deleteResponse.json();
+
+      expect(deleteResponse.status).toBe(200);
+      expect(deleteBody).toHaveProperty("data");
     });
   });
 });

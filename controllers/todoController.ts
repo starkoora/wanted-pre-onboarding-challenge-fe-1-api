@@ -7,7 +7,7 @@ import { TODO_VALIDATION_ERRORS } from "../utils/validator";
 import type { TodoInput } from "../types/todos";
 
 export const createTodo = async (c: Context) => {
-  const { title, content }: TodoInput = await c.req.parseBody();
+  const { title, content }: TodoInput = await c.req.json();
 
   if (title) {
     const todo = await todoService.createTodo({ title, content });
@@ -56,7 +56,7 @@ export const getTodoById = (c: Context) => {
 
 export const updateTodo = async (c: Context) => {
   const { id: todoId } = c.req.param();
-  const { title, content }: TodoInput = await c.req.parseBody();
+  const { title, content }: TodoInput = await c.req.json();
 
   const todo = todoService.findTodo((todo) => todo.id === todoId);
 
