@@ -23,8 +23,9 @@ export const createTodo = async (c: Context) => {
 
 export const getTodos = async (c: Context) => {
   const query = c.req.query();
+  const options = c.req.param();
 
-  const todos = todoService.findTodos();
+  const todos = todoService.findTodos(options);
 
   if (todos) {
     if (query.countOnly) {
