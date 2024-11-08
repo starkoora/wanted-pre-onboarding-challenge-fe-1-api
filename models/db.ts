@@ -34,7 +34,9 @@ export namespace DB {
     return filePath;
   };
 
-  export const createConnection = async () => {
+  export const createConnection = async (
+    options: { preserve?: boolean } = { preserve: true }
+  ) => {
     const filePath = await initDatabase();
 
     const adapter = new JSONFile<Data>(filePath);
@@ -43,7 +45,11 @@ export namespace DB {
     // Read data from JSON file, this will set db.data content
     await instance.read();
 
-    instance.data ||= { todos: [], users: [] };
+    if (options.preserve) {
+      instance.data ||= { todos: [], users: [] };
+    } else {
+      instance.data = { todos: [], users: [] };
+    }
     // Write db.data content to db.json
     await instance.write();
   };

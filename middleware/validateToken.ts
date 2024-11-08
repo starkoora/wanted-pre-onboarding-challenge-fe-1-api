@@ -6,7 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import { createError } from "../utils/responseUtils";
 
 export const validateToken = createMiddleware(async (c, next) => {
-  const token = c.req.header()["authorization"];
+  const token = c.req.header()["authorization"].split(" ")[1];
 
   if (!token) {
     return c.json(createError("Token is missing"), StatusCodes.UNAUTHORIZED);
