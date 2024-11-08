@@ -1,12 +1,40 @@
 import { testClient } from "hono/testing";
 import todoRouter from "../routes/todoRouter.js";
-import { TodoInput } from "../types/todos.js";
+import { Todo, TodoInput } from "../types/todos.js";
 
 export const todo: TodoInput = {
   title: "New Todo",
   content: "This is a new todo",
   priority: "normal",
 };
+
+// 테스트용 데이터
+export const todosForQS: Todo[] = [
+  {
+    id: "1",
+    title: "Urgent Task",
+    content: "This is an urgent task",
+    createdAt: "2023-01-01T00:00:00.000Z",
+    updatedAt: "2023-01-01T00:00:00.000Z",
+    priority: "urgent",
+  },
+  {
+    id: "2",
+    title: "Normal Task",
+    content: "This is a normal task",
+    createdAt: "2023-01-02T00:00:00.000Z",
+    updatedAt: "2023-01-02T00:00:00.000Z",
+    priority: "normal",
+  },
+  {
+    id: "3",
+    title: "Low Priority Task",
+    content: "This task has low priority",
+    createdAt: "2023-01-03T00:00:00.000Z",
+    updatedAt: "2023-01-03T00:00:00.000Z",
+    priority: "low",
+  },
+];
 
 export const createTodo = async (todo: TodoInput, token: string) => {
   const client = testClient(todoRouter);
