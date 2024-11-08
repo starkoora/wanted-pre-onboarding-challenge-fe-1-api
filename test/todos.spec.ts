@@ -16,7 +16,7 @@ import { createUser, user } from "./setupUser.js";
 let token: string;
 
 beforeAll(async () => {
-  await DB.createConnection({ preserve: false });
+  await DB.createConnection({ preserve: false, filename: "test.json" });
 
   const response = await createUser(user);
   const body = await response.json();

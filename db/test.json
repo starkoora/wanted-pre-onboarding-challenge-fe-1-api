@@ -1,0 +1,37 @@
+{
+  "todos": [
+    {
+      "title": "New Todo",
+      "content": "This is a new todo",
+      "priority": "normal",
+      "id": "XarPCy6G29VhVfAGaDJ6y",
+      "createdAt": "2024-11-08T04:20:35.274Z",
+      "updatedAt": "2024-11-08T04:20:35.274Z"
+    },
+    {
+      "title": "New Todo",
+      "content": "This is a new todo",
+      "priority": "normal",
+      "id": "EOrrl7z1FON2ycWjt9H0x",
+      "createdAt": "2024-11-08T04:20:35.281Z",
+      "updatedAt": "2024-11-08T04:20:35.281Z"
+    },
+    {
+      "title": "New Todo",
+      "content": "This is a new todo",
+      "priority": "normal",
+      "id": "WM0NVQvBQMZcuumZYv7SC",
+      "createdAt": "2024-11-08T04:20:35.284Z",
+      "updatedAt": "2024-11-08T04:20:35.286Z"
+    }
+  ],
+  "users": [
+    {
+      "email": "testuser@example.com",
+      "password": "password123",
+      "id": "a84cptu-vY_6j_Z7L-d0t",
+      "createdAt": "2024-11-08T04:20:35.266Z",
+      "updatedAt": "2024-11-08T04:20:35.266Z"
+    }
+  ]
+}
