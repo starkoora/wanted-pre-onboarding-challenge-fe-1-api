@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { testClient } from "hono/testing";
 
 import userRouter from "../routes/userRouter";
 import { DB } from "../models/db";
@@ -12,28 +13,29 @@ beforeAll(async () => {
 
 describe("User API", () => {
   test("POST /users/create - 사용자 계정 생성", async () => {
-    const response = await userRouter.request("/create", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: new Headers({ "Content-Type": "application/json" }),
+    const client = testClient(userRouter);
+
+    const response = await client.create.$post({
+      json: { email, password },
     });
 
     const body = await response.json();
+    console.log(body);
 
     expect(response.status).toBe(200);
     expect(body).toHaveProperty("token");
   });
 
   test("POST /users/login - 사용자 계정 로그인", async () => {
-    const res = await userRouter.request("/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: new Headers({ "Content-Type": "application/json" }),
+    const client = testClient(userRouter);
+
+    const response = await client.login.$post({
+      json: { email, password },
     });
 
-    const body = await res.json();
+    const body = await response.json();
 
-    expect(res.status).toBe(200);
+    expect(response.status).toBe(200);
     expect(body).toHaveProperty("token");
   });
 });
