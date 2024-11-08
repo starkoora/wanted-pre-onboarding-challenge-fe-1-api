@@ -4,8 +4,8 @@ import { join } from "path";
 import { nanoid } from "nanoid";
 import path from "path";
 
-import type { Todo } from "../types/todos";
-import type { User } from "../types/users";
+import type { Todo } from "../types/todos.js";
+import type { User } from "../types/users.js";
 
 const __dirname = path.resolve();
 

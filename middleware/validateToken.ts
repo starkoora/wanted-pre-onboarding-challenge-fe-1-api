@@ -1,10 +1,11 @@
 import { createMiddleware } from "hono/factory";
 import jwt from "jsonwebtoken";
-
-import { JWT_TOKEN_SALT } from "../utils/authorizeUtils";
 import { StatusCodes } from "http-status-codes";
-import { createError } from "../utils/responseUtils";
 
+import { JWT_TOKEN_SALT } from "../utils/authorizeUtils.js";
+import { createError } from "../utils/responseUtils.js";
+
+// TODO: @hono/zod-validator로 이관
 export const validateToken = createMiddleware(async (c, next) => {
   const token = c.req.header()["authorization"].split(" ")[1];
 

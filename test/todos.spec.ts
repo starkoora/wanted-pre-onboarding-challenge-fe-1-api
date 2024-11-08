@@ -1,17 +1,17 @@
 import { testClient } from "hono/testing";
 import { beforeAll, describe, expect, test } from "vitest";
 
-import { DB } from "../models/db";
-import todoRouter from "../routes/todoRouter";
-import { Todo } from "../types/todos";
+import { DB } from "../models/db.js";
+import todoRouter from "../routes/todoRouter.js";
+import { Todo } from "../types/todos.js";
 import {
   createTodo,
   deleteTodo,
   getTodo,
   todo,
   updateTodo,
-} from "./setupTodos";
-import { createUser, user } from "./setupUser";
+} from "./setupTodos.js";
+import { createUser, user } from "./setupUser.js";
 
 let token: string;
 

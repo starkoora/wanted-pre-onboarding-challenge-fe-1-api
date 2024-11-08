@@ -1,5 +1,5 @@
-import { DB } from "../models/db";
-import type { User } from "../types/users";
+import { DB } from "../models/db.js";
+import type { User } from "../types/users.js";
 
 export const userRepository = {
   create: async ({ email, password }: Pick<User, "email" | "password">) => {

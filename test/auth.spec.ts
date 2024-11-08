@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-import { DB } from "../models/db";
-import { createUser, login, user } from "./setupUser";
+import { DB } from "../models/db.js";
+import { createUser, login, user } from "./setupUser.js";
 
 beforeAll(async () => {
   await DB.createConnection({ preserve: false });

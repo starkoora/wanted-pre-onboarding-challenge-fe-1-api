@@ -1,16 +1,16 @@
 import { Context } from "hono";
 import { StatusCodes } from "http-status-codes";
 
-import * as todoService from "../services/todoService";
-import { createError, createResponse } from "../utils/responseUtils";
-import { TODO_VALIDATION_ERRORS } from "../utils/validator";
-import type { TodoInput } from "../types/todos";
+import * as todoService from "../services/todoService.js";
+import { createError, createResponse } from "../utils/responseUtils.js";
+import { TODO_VALIDATION_ERRORS } from "../utils/validator.js";
+import type { TodoInput } from "../types/todos.js";
 
 export const createTodo = async (c: Context) => {
-  const { title, content }: TodoInput = await c.req.json();
+  const params: TodoInput = await c.req.json();
 
-  if (title) {
-    const todo = await todoService.createTodo({ title, content });
+  if (params.title) {
+    const todo = await todoService.createTodo(params);
 
     return c.json(createResponse(todo), StatusCodes.OK);
   } else {
@@ -22,12 +22,12 @@ export const createTodo = async (c: Context) => {
 };
 
 export const getTodos = async (c: Context) => {
-  const { countOnly } = c.req.query();
+  const query = c.req.query();
 
   const todos = todoService.findTodos();
 
   if (todos) {
-    if (countOnly) {
+    if (query.countOnly) {
       return c.json(createResponse(todos.length), StatusCodes.OK);
     }
     return c.json(createResponse(todos), StatusCodes.OK);

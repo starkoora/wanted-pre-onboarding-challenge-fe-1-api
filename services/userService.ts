@@ -1,5 +1,5 @@
-import { userRepository } from "../repositories/userRepository";
-import type { User } from "../types/users";
+import { userRepository } from "../repositories/userRepository.js";
+import type { User } from "../types/users.js";
 
 export const createUser = async ({
   email,

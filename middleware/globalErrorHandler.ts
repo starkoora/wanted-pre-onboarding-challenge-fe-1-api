@@ -1,7 +1,8 @@
 import { Context } from "hono";
 import { HTTPResponseError } from "hono/types";
 import { StatusCodes } from "http-status-codes";
-import { createError } from "../utils/responseUtils";
+
+import { createError } from "../utils/responseUtils.js";
 
 export const globalErrorHandler = (
   err: Error | HTTPResponseError,
