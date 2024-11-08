@@ -2,8 +2,8 @@ import { Data, DB } from "../models/db.js";
 import type { Todo, TodoInput } from "../types/todos.js";
 
 export const todoRepository = {
-  create: async ({ title, content }: TodoInput) => {
-    const todo = DB.create<Todo>({ title, content });
+  create: async ({ title, content, priority }: TodoInput) => {
+    const todo = DB.create<Todo>({ title, content, priority });
 
     DB.instance.data?.todos.push(todo);
     await DB.instance.write();
