@@ -2,19 +2,23 @@ import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
 
 import app from "../app";
+import { DB } from "../models/db";
+import { createUser, user } from "./setupUser";
 
 let token: string;
 
-describe.skip("Todos API", () => {
-  beforeAll(async () => {
-    if (!token) {
-      const response = await request(app)
-        .post("/users/login")
-        .send({ email: "test@example.com", password: "password123" });
-      token = response.body.token;
-    }
-  });
+beforeAll(async () => {
+  await DB.createConnection({ preserve: false });
 
+  const response = await createUser(user);
+  const body = await response.json();
+
+  if ("token" in body) {
+    token = body.token;
+  }
+});
+
+describe("Todos API", () => {
   describe("GET /todos", () => {
     it("should return a list of todos", async () => {
       const response = await request(app)
