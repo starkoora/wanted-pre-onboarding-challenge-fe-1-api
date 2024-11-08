@@ -1,5 +1,4 @@
 node_modules
 dist
 
-# db라는 경로 하위에 있는 .json은 제외
 db/**/*.json
