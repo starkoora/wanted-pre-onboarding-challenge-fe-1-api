@@ -5,9 +5,9 @@
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": ["**/*"],
   "exclude": ["./node_modules"]
