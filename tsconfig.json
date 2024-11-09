@@ -5,9 +5,7 @@
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "moduleResolution": "NodeNext"
   },
   "include": ["**/*"],
   "exclude": ["./node_modules"]
