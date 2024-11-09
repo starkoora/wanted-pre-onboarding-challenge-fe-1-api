@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "NodeNext",
+    "module": "esnext",
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["**/*"],
   "exclude": ["./node_modules"]
