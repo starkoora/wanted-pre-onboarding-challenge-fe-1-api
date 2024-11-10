@@ -14,6 +14,7 @@ import {
 } from "./setupTodos.js";
 import { createUser, user } from "./setupUser.js";
 import { TodoQueryService } from "../services/todoQueryService.js";
+import { ResponseData } from "../utils/responseUtils.js";
 
 let token: string;
 
@@ -52,6 +53,33 @@ describe("Todos API", () => {
       expect(response.status).toBe(200);
       expect(body).toHaveProperty("data");
     });
+
+    test("할 일 목록의 개수를 반환해야 한다", async () => {
+      const client = testClient(todoRouter);
+
+      const response = await client.index.$get(
+        { query: { countOnly: true } },
+        { headers: { Authorization: token } }
+      );
+      const body = (await response.json()) as ResponseData;
+
+      expect(response.status).toBe(200);
+      expect(body.data).toBe(1);
+    });
+
+    test("할 일 목록을 필터링해야 한다", async () => {
+      const client = testClient(todoRouter);
+
+      const response = await client.index.$get(
+        { query: { priorityFilter: "urgent" } },
+        { headers: { Authorization: token } }
+      );
+      const body = (await response.json()) as ResponseData;
+
+      expect(response.status).toBe(200);
+      expect(body).toHaveProperty("data");
+      expect(body.data).toHaveLength(0);
+    });
   });
 
   describe("GET /todos/:id", () => {
@@ -62,10 +90,10 @@ describe("Todos API", () => {
       const todoId = body.data.id;
 
       const getResponse = await getTodo(todoId, token);
-      const getBody = await getResponse.json();
+      const getBody = (await getResponse.json()) as ResponseData;
 
       expect(getResponse.status).toBe(200);
-      expect(getBody).toHaveProperty("data");
+      expect(getBody.data).toEqual(body.data);
     });
   });
 
@@ -78,11 +106,15 @@ describe("Todos API", () => {
       };
       const todoId = createBody.data.id;
 
-      const updateResponse = await updateTodo(todoId, todo, token);
-      const updateBody = await updateResponse.json();
+      const updateResponse = await updateTodo(
+        todoId,
+        { ...todo, content: "hi" },
+        token
+      );
+      const updateBody = (await updateResponse.json()) as ResponseData;
 
       expect(updateResponse.status).toBe(200);
-      expect(updateBody).toHaveProperty("data");
+      expect(updateBody.data.content).toBe("hi");
     });
   });
 
@@ -96,10 +128,10 @@ describe("Todos API", () => {
       const todoId = createBody.data.id;
 
       const deleteResponse = await deleteTodo(todoId, token);
-      const deleteBody = await deleteResponse.json();
+      const deleteBody = (await deleteResponse.json()) as ResponseData;
 
       expect(deleteResponse.status).toBe(200);
-      expect(deleteBody).toHaveProperty("data");
+      expect(deleteBody.data).toBeNull();
     });
   });
 });

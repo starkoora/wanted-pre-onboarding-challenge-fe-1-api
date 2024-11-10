@@ -48,7 +48,10 @@ export const createTodo = async (todo: TodoInput, token: string) => {
 export const getTodo = async (id: string, token: string) => {
   const client = testClient(todoRouter);
 
-  return client.index.$get({ id }, { headers: { Authorization: token } });
+  return client[":id"].$get(
+    { param: { id } },
+    { headers: { Authorization: token } }
+  );
 };
 
 export const updateTodo = async (
