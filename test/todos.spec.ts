@@ -67,6 +67,20 @@ describe("Todos API", () => {
       expect(body.data).toBe(1);
     });
 
+    test("countOnly가 false일 때는 할 일 목록을 그대로 반환해야 한다", async () => {
+      const client = testClient(todoRouter);
+
+      const response = await client.index.$get(
+        { query: { countOnly: false } },
+        { headers: { Authorization: token } }
+      );
+      const body = (await response.json()) as ResponseData;
+
+      expect(response.status).toBe(200);
+      expect(body).toHaveProperty("data");
+      expect(Array.isArray(body.data)).toBe(true);
+    });
+
     test("할 일 목록을 필터링해야 한다", async () => {
       const client = testClient(todoRouter);
 
