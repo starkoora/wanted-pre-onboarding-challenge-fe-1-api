@@ -27,7 +27,7 @@ export const getTodos = async (c: Context) => {
   const todos = todoService.findTodos(query);
 
   if (todos) {
-    if (query.countOnly) {
+    if (query.countOnly === 'true') {
       return c.json(createResponse(todos.length), StatusCodes.OK);
     }
     return c.json(createResponse(todos), StatusCodes.OK);
