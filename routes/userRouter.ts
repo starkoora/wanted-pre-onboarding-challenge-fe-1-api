@@ -1,10 +1,9 @@
-import express from "express";
+import { Hono } from "hono";
 
-import * as authController from "../controllers/authController";
+import * as authController from "../controllers/authController.js";
 
-const router = express.Router();
-
-router.post("/login", authController.login);
-router.post("/create", authController.signUp);
+const router = new Hono()
+  .post("/login", authController.login)
+  .post("/create", authController.signUp);
 
 export default router;

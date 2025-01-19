@@ -78,7 +78,7 @@
 - [login](#login)
 - [signUp](#signUp)
 
-# <span id="todos">1-3) Todos</span>
+# <span id="todos">2-3) Todos</span>
 
 ## getTodos
 
@@ -87,6 +87,14 @@
 - GET `/todos`
 - Headers
   - Authorization: login token
+
+### Query Parameters
+
+- **sort** (string, optional): 정렬 기준 (`createdAt`, `updatedAt`, `priority`)
+- **order** (string, optional): 정렬 순서 (`asc` 또는 `desc`)
+- **priorityFilter** (string, optional): 우선순위 필터링 (`urgent`, `normal`, `low`)
+- **keyword** (string, optional): 제목 또는 내용에서 검색할 키워드
+- **countOnly** (boolean, optional): `true`로 설정하면 할 일의 개수만 반환
 
 ### 응답 예시
 
@@ -98,18 +106,29 @@
       "content": "hello",
       "id": "z3FGrcRL55qDCFnP4KRtn",
       "createdAt": "2022-07-24T14:15:55.537Z",
-      "updatedAt": "2022-07-24T14:15:55.537Z"
+      "updatedAt": "2022-07-24T14:15:55.537Z",
+      "priority": "urgent"
     },
     {
       "title": "hi",
       "content": "hello",
       "id": "z3FGrcRL55qDCFnP4KRtn",
       "createdAt": "2022-07-24T14:15:55.537Z",
-      "updatedAt": "2022-07-24T14:15:55.537Z"
+      "updatedAt": "2022-07-24T14:15:55.537Z",
+      "priority": "normal"
     }
   ]
 }
 ```
+
+예시 사용법:
+
+- **우선순위 필터링**: `/todos?priorityFilter=urgent`
+- **키워드 검색**: `/todos?keyword=meeting`
+- **정렬 및 순서 지정**: `/todos?sort=createdAt&order=desc`
+- **조합된 조건**: `/todos?priorityFilter=normal&sort=updatedAt&order=asc&keyword=project`
+
+---
 
 ## getTodoById
 
@@ -128,19 +147,23 @@
     "content": "hello",
     "id": "z3FGrcRL55qDCFnP4KRtn",
     "createdAt": "2022-07-24T14:15:55.537Z",
-    "updatedAt": "2022-07-24T14:15:55.537Z"
+    "updatedAt": "2022-07-24T14:15:55.537Z",
+    "priority": "urgent"
   }
 }
 ```
+
+---
 
 ## createTodo
 
 ### URL
 
 - POST `/todos`
-- Parameter
+- Parameters
   - title: string
   - content: string
+  - priority: "urgent" | "normal" | "low"
 - Headers
   - Authorization: login token
 
@@ -153,19 +176,23 @@
     "content": "hello",
     "id": "z3FGrcRL55qDCFnP4KRtn",
     "createdAt": "2022-07-24T14:15:55.537Z",
-    "updatedAt": "2022-07-24T14:15:55.537Z"
+    "updatedAt": "2022-07-24T14:15:55.537Z",
+    "priority": "normal"
   }
 }
 ```
+
+---
 
 ## updateTodo
 
 ### URL
 
 - PUT `/todos/:id`
-- Parameter
+- Parameters
   - title: string
   - content: string
+  - priority: "urgent" | "normal" | "low"
 - Headers
   - Authorization: login token
 
@@ -178,10 +205,13 @@
     "content": "내용 변경",
     "id": "RMfi3XyOKoI5zd0A_bsPL",
     "createdAt": "2022-07-24T14:25:48.627Z",
-    "updatedAt": "2022-07-24T14:25:48.627Z"
+    "updatedAt": "2022-07-24T14:25:48.627Z",
+    "priority": "urgent"
   }
 }
 ```
+
+---
 
 ## deleteTodo
 
@@ -199,14 +229,16 @@
 }
 ```
 
-# <span id="auth">1-4) Auth</span>
+---
+
+# <span id="auth">2-4) Auth</span>
 
 ## login
 
 ### URL
 
 - POST `/users/login`
-- Parameter
+- Parameters
   - email: string
   - password: string
 
@@ -219,12 +251,14 @@
 }
 ```
 
+---
+
 ## signUp
 
 ### URL
 
 - POST `/users/create`
-- Parameter
+- Parameters
   - email: string
   - password: string
 
@@ -235,4 +269,8 @@
   "message": "계정이 성공적으로 생성되었습니다",
   "token": "eyJhbGciOiJIUzI1NiJ9.YXNkZkBhc2RmYXNkZi5jb20.h-oLZnV0pCeNKa_AM3ilQzerD2Uj7bKUn1xDft5DzOk"
 }
+```
+
+```
+
 ```

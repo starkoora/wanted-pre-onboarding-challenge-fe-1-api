@@ -1,16 +1,13 @@
-import express from "express";
+import { Hono } from "hono";
+import * as todoController from "../controllers/todoController.js";
+import { validateToken } from "../middleware/validateToken.js";
 
-import * as todoController from "../controllers/todoController";
-import { validateToken } from "../middleware/validateToken";
-
-const router = express.Router();
-
-router.use(validateToken);
-
-router.get("/", todoController.getTodos);
-router.post("/", todoController.createTodo);
-router.get("/:id", todoController.getTodoById);
-router.put("/:id", todoController.updateTodo);
-router.delete("/:id", todoController.deleteTodo);
+const router = new Hono()
+  .use("*", validateToken)
+  .get("/", todoController.getTodos)
+  .post("/", todoController.createTodo)
+  .get("/:id", todoController.getTodoById)
+  .put("/:id", todoController.updateTodo)
+  .delete("/:id", todoController.deleteTodo);
 
 export default router;

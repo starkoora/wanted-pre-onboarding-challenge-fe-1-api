@@ -1,20 +1,20 @@
-import type { Request, Response } from "express";
+import { Context } from "hono";
 import { StatusCodes } from "http-status-codes";
 
-import * as userService from "../services/userService";
-import { createError } from "../utils/responseUtils";
-import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator";
-import { createToken } from "../utils/authorizeUtils";
+import * as userService from "../services/userService.js";
+import { createError } from "../utils/responseUtils.js";
+import { loginValidator, USER_VALIDATION_ERRORS } from "../utils/validator.js";
+import { createToken } from "../utils/authorizeUtils.js";
 
-import type { UserInput } from "../types/users";
+import type { UserInput } from "../types/users.js";
 
 // 로그인
-export const login = async (req: Request, res: Response) => {
-  const { email, password }: UserInput = req.body;
+export const login = async (c: Context) => {
+  const { email, password }: UserInput = await c.req.json();
 
   const { isValid, message } = loginValidator({ email, password });
   if (!isValid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(createError(message));
+    return c.json(createError(message), StatusCodes.BAD_REQUEST);
   }
 
   const user = userService.findUser(
@@ -22,35 +22,37 @@ export const login = async (req: Request, res: Response) => {
   );
 
   if (user) {
-    return res.status(StatusCodes.OK).send({
+    return c.json({
       message: "성공적으로 로그인 했습니다",
       token: createToken(email),
     });
   } else {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .send(createError(USER_VALIDATION_ERRORS.USER_NOT_FOUND));
+    return c.json(
+      createError(USER_VALIDATION_ERRORS.USER_NOT_FOUND),
+      StatusCodes.BAD_REQUEST
+    );
   }
 };
 
 // 회원 가입
-export const signUp = async (req: Request, res: Response) => {
-  const { email, password }: UserInput = req.body;
+export const signUp = async (c: Context) => {
+  const { email, password }: UserInput = await c.req.json();
 
   const { isValid, message } = loginValidator({ email, password });
   if (!isValid) {
-    return res.status(StatusCodes.BAD_REQUEST).send(createError(message));
+    return c.json(createError(message), StatusCodes.BAD_REQUEST);
   }
 
   const existUser = userService.findUser((user) => user.email === email);
   if (existUser) {
-    return res
-      .status(StatusCodes.CONFLICT)
-      .send(createError(USER_VALIDATION_ERRORS.EXIST_USER));
+    return c.json(
+      createError(USER_VALIDATION_ERRORS.EXIST_USER),
+      StatusCodes.CONFLICT
+    );
   } else {
     await userService.createUser({ email, password });
 
-    return res.status(StatusCodes.OK).send({
+    return c.json({
       message: "계정이 성공적으로 생성되었습니다",
       token: createToken(email),
     });
